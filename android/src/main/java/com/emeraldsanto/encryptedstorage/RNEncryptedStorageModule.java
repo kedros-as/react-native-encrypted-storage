@@ -22,8 +22,11 @@ public class RNEncryptedStorageModule extends ReactContextBaseJavaModule {
 
         try {
             MasterKey key = new MasterKey.Builder(context)
+                    .setRequestStrongBoxBacked(true)
                     .setKeyScheme(MasterKey.KeyScheme.AES256_GCM)
                     .build();
+
+            if (!key.isStrongBoxBacked()) Log.w(NATIVE_MODULE_NAME, "Key is not StrongBox backed!");
 
             this.sharedPreferences = EncryptedSharedPreferences.create(
                 context,
