@@ -23,13 +23,12 @@
     "!**/*.test.*"
   ],
   "scripts": {
+    "example": "yarn workspace react-native-encrypted-storage-example",
     "test": "jest",
     "typescript": "tsc --noEmit",
     "lint": "eslint \"**/*.{js,ts,tsx}\"",
     "prepare": "bob build",
-    "example": "yarn --cwd example",
-    "pods": "cd example && pod-install --quiet",
-    "bootstrap": "yarn example && yarn && yarn pods"
+    "pods": "cd example && pod-install --quiet"
   },
   "keywords": [
     "react-native",
@@ -101,6 +100,13 @@
     "tabWidth": 2,
     "trailingComma": "es5",
     "useTabs": false
+  },
+  "workspaces": [
+    "example"
+  ],
+  "packageManager": "yarn@3.8.7",
+  "engines": {
+    "node": ">=18"
   },
   "react-native-builder-bob": {
     "source": "src",
