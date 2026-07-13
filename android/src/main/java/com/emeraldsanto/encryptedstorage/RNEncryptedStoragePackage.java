@@ -1,22 +1,36 @@
 package com.emeraldsanto.encryptedstorage;
 
-import com.facebook.react.ReactPackage;
+import com.facebook.react.BaseReactPackage;
 import com.facebook.react.bridge.NativeModule;
 import com.facebook.react.bridge.ReactApplicationContext;
-import com.facebook.react.uimanager.ViewManager;
+import com.facebook.react.module.model.ReactModuleInfo;
+import com.facebook.react.module.model.ReactModuleInfoProvider;
 
 import java.util.Collections;
-import java.util.List;
 
-public class RNEncryptedStoragePackage implements ReactPackage {
+public class RNEncryptedStoragePackage extends BaseReactPackage {
 
     @Override
-    public List<NativeModule> createNativeModules(ReactApplicationContext reactContext) {
-        return Collections.<NativeModule>singletonList(new RNEncryptedStorageModule(reactContext));
+    public NativeModule getModule(String name, ReactApplicationContext reactContext) {
+        if (name.equals(RNEncryptedStorageModule.NAME)) {
+            return new RNEncryptedStorageModule(reactContext);
+        }
+
+        return null;
     }
 
     @Override
-    public List<ViewManager> createViewManagers(ReactApplicationContext reactContext) {
-        return Collections.emptyList();
+    public ReactModuleInfoProvider getReactModuleInfoProvider() {
+        return () -> Collections.singletonMap(
+            RNEncryptedStorageModule.NAME,
+            new ReactModuleInfo(
+                RNEncryptedStorageModule.NAME,
+                RNEncryptedStorageModule.NAME,
+                false,
+                false,
+                false,
+                true
+            )
+        );
     }
 }

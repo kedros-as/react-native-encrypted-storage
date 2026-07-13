@@ -1,4 +1,4 @@
-import React, { FC } from 'react';
+import { FC } from 'react';
 import { Alert, SafeAreaView, StyleSheet, Text } from 'react-native';
 import EncryptedStorage from 'react-native-encrypted-storage';
 import { ButtonWorker } from './components/ButtonWorker/ButtonWorker';

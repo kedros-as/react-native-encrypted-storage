@@ -1,4 +1,4 @@
-import React, { FC, useState } from 'react';
+import { FC, useState } from 'react';
 import { ActivityIndicator, Text, TouchableOpacity } from 'react-native';
 import { ButtonWorkerProps } from './ButtonWorkerProps';
 import { ButtonWorkerStyle } from './ButtonWorkerStyle';

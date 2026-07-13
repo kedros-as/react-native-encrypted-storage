@@ -7,8 +7,12 @@
 //
 
 #import <Foundation/Foundation.h>
-#import <React/RCTBridgeModule.h>
+#import <RNEncryptedStorageSpec/RNEncryptedStorageSpec.h>
 
-@interface RNEncryptedStorage : NSObject <RCTBridgeModule>
+NS_ASSUME_NONNULL_BEGIN
+
+@interface RNEncryptedStorage : NSObject <NativeRNEncryptedStorageSpec>
 
 @end
+
+NS_ASSUME_NONNULL_END

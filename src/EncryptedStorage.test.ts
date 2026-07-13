@@ -1,7 +1,9 @@
-import { NativeModules } from 'react-native';
+import { TurboModuleRegistry } from 'react-native';
 import EncryptedStorage from './EncryptedStorage';
 
-const { RNEncryptedStorage } = NativeModules;
+const RNEncryptedStorage = TurboModuleRegistry.getEnforcing(
+  'RNEncryptedStorage'
+) as any;
 
 describe('lib/EncryptedStorage', () => {
   afterEach(() => {

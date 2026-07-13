@@ -10,12 +10,11 @@ Pod::Spec.new do |s|
   s.license      = package["license"]
   s.authors      = package["author"]
 
-  s.platforms    = { :ios => "10.0" }
-  s.source       = { :git => "https://github.com/emeraldsanto/react-native-encrypted-storage.git", :tag => "#{s.version}" }
+  s.platforms    = { :ios => "15.1" }
+  s.source       = { :git => "https://github.com/kedros-as/react-native-encrypted-storage.git", :tag => "#{s.version}" }
 
-  
   s.source_files = "ios/**/*.{h,m,mm,swift}"
-  
+  s.private_header_files = "ios/**/*.h"
 
-  s.dependency "React-Core"
+  install_modules_dependencies(s)
 end

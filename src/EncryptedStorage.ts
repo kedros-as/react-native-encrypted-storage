@@ -1,11 +1,4 @@
-/* eslint-disable no-dupe-class-members */
-
-import { NativeModules } from 'react-native';
-const { RNEncryptedStorage } = NativeModules;
-
-if (!RNEncryptedStorage) {
-  throw new Error('RNEncryptedStorage is undefined');
-}
+import RNEncryptedStorage from './NativeRNEncryptedStorage';
 
 export type StorageErrorCallback = (error?: Error) => void;
 export type StorageValueCallback = (error?: Error, value?: string) => void;
@@ -31,7 +24,9 @@ export default class EncryptedStorage {
     cb?: StorageErrorCallback
   ): void | Promise<void> {
     if (cb) {
-      RNEncryptedStorage.setItem(key, value).then(cb).catch(cb);
+      RNEncryptedStorage.setItem(key, value)
+        .then(() => cb())
+        .catch(cb);
       return;
     }
 
@@ -55,7 +50,9 @@ export default class EncryptedStorage {
     cb?: StorageValueCallback
   ): void | Promise<string | null> {
     if (cb) {
-      RNEncryptedStorage.getItem(key).then(cb).catch(cb);
+      RNEncryptedStorage.getItem(key)
+        .then((value) => cb(undefined, value ?? undefined))
+        .catch(cb);
       return;
     }
 
@@ -79,7 +76,9 @@ export default class EncryptedStorage {
     cb?: StorageErrorCallback
   ): void | Promise<void> {
     if (cb) {
-      RNEncryptedStorage.removeItem(key).then(cb).catch(cb);
+      RNEncryptedStorage.removeItem(key)
+        .then(() => cb())
+        .catch(cb);
       return;
     }
 
@@ -98,7 +97,9 @@ export default class EncryptedStorage {
   static clear(cb: StorageErrorCallback): void;
   static clear(cb?: StorageErrorCallback): void | Promise<void> {
     if (cb) {
-      RNEncryptedStorage.clear().then(cb).catch(cb);
+      RNEncryptedStorage.clear()
+        .then(() => cb())
+        .catch(cb);
       return;
     }
 

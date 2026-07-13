@@ -1,5 +1,5 @@
 //
-//  RNEncryptedStorage.m
+//  RNEncryptedStorage.mm
 //  Starter
 //
 //  Created by Yanick Bélanger on 2020-02-09.
@@ -20,14 +20,7 @@ void rejectPromise(NSString *message, NSError *error, RCTPromiseRejectBlock reje
 
 @implementation RNEncryptedStorage
 
-+ (BOOL)requiresMainQueueSetup
-{
-    return NO;
-}
-
-RCT_EXPORT_MODULE();
-
-RCT_EXPORT_METHOD(setItem:(NSString *)key withValue:(NSString *)value resolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject)
+- (void)setItem:(NSString *)key value:(NSString *)value resolve:(RCTPromiseResolveBlock)resolve reject:(RCTPromiseRejectBlock)reject
 {
     NSData* dataFromValue = [value dataUsingEncoding:NSUTF8StringEncoding];
     if (dataFromValue == nil) {
@@ -77,12 +70,12 @@ RCT_EXPORT_METHOD(setItem:(NSString *)key withValue:(NSString *)value resolver:(
             return;
         }
     }
-    
+
     NSError* error = [NSError errorWithDomain:[[NSBundle mainBundle] bundleIdentifier] code:res userInfo: nil];
-    rejectPromise(@"An error occured while saving value", error, reject);   
+    rejectPromise(@"An error occured while saving value", error, reject);
 }
 
-RCT_EXPORT_METHOD(getItem:(NSString *)key resolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject)
+- (void)getItem:(NSString *)key resolve:(RCTPromiseResolveBlock)resolve reject:(RCTPromiseRejectBlock)reject
 {
     NSDictionary* getQuery = @{
         (__bridge id)kSecClass : (__bridge id)kSecClassGenericPassword,
@@ -90,10 +83,10 @@ RCT_EXPORT_METHOD(getItem:(NSString *)key resolver:(RCTPromiseResolveBlock)resol
         (__bridge id)kSecReturnData : (__bridge id)kCFBooleanTrue,
         (__bridge id)kSecMatchLimit : (__bridge id)kSecMatchLimitOne
     };
-    
+
     CFTypeRef dataRef = NULL;
     OSStatus getStatus = SecItemCopyMatching((__bridge CFDictionaryRef)getQuery, &dataRef);
-    
+
     if (getStatus == errSecSuccess) {
         NSString* storedValue = [[NSString alloc] initWithData: (__bridge NSData*)dataRef encoding: NSUTF8StringEncoding];
         resolve(storedValue);
@@ -109,27 +102,27 @@ RCT_EXPORT_METHOD(getItem:(NSString *)key resolver:(RCTPromiseResolveBlock)resol
     }
 }
 
-RCT_EXPORT_METHOD(removeItem:(NSString *)key resolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject)
+- (void)removeItem:(NSString *)key resolve:(RCTPromiseResolveBlock)resolve reject:(RCTPromiseRejectBlock)reject
 {
     NSDictionary* removeQuery = @{
         (__bridge id)kSecClass : (__bridge id)kSecClassGenericPassword,
         (__bridge id)kSecAttrAccount : key,
         (__bridge id)kSecReturnData : (__bridge id)kCFBooleanTrue
     };
-    
+
     OSStatus removeStatus = SecItemDelete((__bridge CFDictionaryRef)removeQuery);
-    
+
     if (removeStatus == noErr) {
         resolve(key);
     }
-    
+
     else {
         NSError* error = [NSError errorWithDomain:[[NSBundle mainBundle] bundleIdentifier] code:removeStatus userInfo: nil];
         rejectPromise(@"An error occured while removing value", error, reject);
     }
 }
 
-RCT_EXPORT_METHOD(clear:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject)
+- (void)clear:(RCTPromiseResolveBlock)resolve reject:(RCTPromiseRejectBlock)reject
 {
     NSArray *secItemClasses = @[
         (__bridge id)kSecClassGenericPassword,
@@ -138,13 +131,25 @@ RCT_EXPORT_METHOD(clear:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseReje
         (__bridge id)kSecClassKey,
         (__bridge id)kSecClassIdentity
     ];
-    
+
     // Maps through all Keychain classes and deletes all items that match
     for (id secItemClass in secItemClasses) {
         NSDictionary *spec = @{(__bridge id)kSecClass: secItemClass};
         SecItemDelete((__bridge CFDictionaryRef)spec);
     }
-    
+
     resolve(nil);
 }
+
+- (std::shared_ptr<facebook::react::TurboModule>)getTurboModule:
+    (const facebook::react::ObjCTurboModule::InitParams &)params
+{
+    return std::make_shared<facebook::react::NativeRNEncryptedStorageSpecJSI>(params);
+}
+
++ (NSString *)moduleName
+{
+    return @"RNEncryptedStorage";
+}
+
 @end
